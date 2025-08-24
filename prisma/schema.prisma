@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String   @id
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum PaymentMethod {
+  CARTAO_CREDITO
+  BOLETO
+  PIX
+}
+
+model Clients {
+  id        String   @id
+  name      String
+  email     String   @unique
+  address   String
+  phone     String
+  sales     Sales[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("clients")
+}
+
+model Sales {
+  id            String          @id
+  date          DateTime        @default(now())
+  total         Float
+  paymentMethod PaymentMethod
+  clientId      String
+  client        Clients         @relation(fields: [clientId], references: [id])
+  Sale_Products Sale_Products[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@map("sales")
+}
+
+model Category {
+  id        String     @id
+  name      String
+  Products  Products[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("category")
+}
+
+model Products {
+  id          String   @id
+  name        String
+  category    Category @relation(fields: [categoryId], references: [id])
+  quantity    Int
+  cost        Float
+  price       Float
+  description String
+  categoryId  String
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Sale_Products Sale_Products[]
+
+  @@map("products")
+}
+
+model Sale_Products {
+  id       String   @id
+  sale     Sales    @relation(fields: [saleId], references: [id])
+  product  Products @relation(fields: [productId], references: [id])
+  quantity Int
+
+  saleId    String
+  productId String
+
+  @@map("sale_products")
+}
