@@ -53,7 +53,28 @@ class UserService {
             updatedAt: user.updatedAt
         });
     }
-   
+
+    public async resetPassword(email: string, password: string): Promise<void> {
+        const user = await prisma.user.findUnique({
+            where: {email: email}
+        })
+
+        if(!user){
+            throw new Error("Usuário não encontrado!");
+        }
+
+        const hashedPassword = await hash(password, 10);
+
+        await prisma.user.update({
+            where: {email: email},
+            data: {
+                password: hashedPassword,
+                updatedAt: new Date()
+            }
+        });
+
+        return;
+    }
 }
 
 

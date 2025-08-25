@@ -18,10 +18,21 @@ export default function UserController(app: FastifyInstance) {
         const body = request.body as LoginUserDTO
 
         try {
-            await userService.login(body, app);
-            return reply.status(201).send();
+            const token = await userService.login(body, app);
+            return reply.status(201).send({accesToken: token});
         } catch (error: any) {
             return reply.status(400).send({error: error.message});
         }
-    }) // Controller logic here
+    })
+    
+    app.patch("/users/reset-password", async(request: FastifyRequest, reply: FastifyReply) => {
+        const {email, password} = request.body as {email: string, password: string};
+        try{
+            await userService.resetPassword(email, password);
+            return reply.status(204).send();
+        }catch(error: any){
+            return reply.status(400).send({error: error.message});
+        }
+
+    })// Controller logic here
 }

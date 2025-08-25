@@ -13,14 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id        String   @id
   name      String
   email     String   @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -38,8 +37,8 @@ model Clients {
   address   String
   phone     String
   sales     Sales[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("clients")
 }
@@ -52,8 +51,8 @@ model Sales {
   clientId      String
   client        Clients         @relation(fields: [clientId], references: [id])
   Sale_Products Sale_Products[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
 
   @@map("sales")
 }
@@ -62,8 +61,8 @@ model Category {
   id        String     @id
   name      String
   Products  Products[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
 
   @@map("category")
 }
@@ -77,9 +76,9 @@ model Products {
   price       Float
   description String
   categoryId  String
-
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
   Sale_Products Sale_Products[]
 
   @@map("products")
