@@ -70,12 +70,12 @@ model Category {
 model Products {
   id          String   @id
   name        String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category @relation(fields: [category_id], references: [id])
   quantity    Int
   cost        Float
   price       Float
   description String
-  categoryId  String
+  category_id  String
   isActive   Boolean  @default(true) @map("is_active")
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")

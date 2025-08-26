@@ -6,9 +6,14 @@ export default function ProductController(app: FastifyInstance){
     app.addHook("onRequest", app.authenticate);
 
     app.get("/products", async(request, reply) => {
+        const params = request.query;
+
         try {
-            const list = await productService.getAllProducts();
-            return reply.status(200).send(list);    
+            const list = Object.keys(params as object).length > 0
+            ? await productService.getByParams(params)
+            : await productService.getAllProducts();
+         
+            return reply.status(200).send(list);
         } catch (error) {
             return reply.code(400).send({error: "Não foi possível listar os produtos."});
         }
@@ -46,4 +51,15 @@ export default function ProductController(app: FastifyInstance){
             return reply.code(400).send({error: error.message});
         }
     })
+
+    // app.get("/products", async(request: FastifyRequest, reply: FastifyReply) =>{
+    //     const params = request.query
+
+    //     try {
+    //         const list = await productService.getByParams(params);
+    //         return reply.status(200).send(list);
+    //     } catch (error: any) {
+    //         return reply.code(400).send({error: "Não foi possível listar os produtos."});
+    //     }
+    // })
 }
