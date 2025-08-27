@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import UserController from './controller/UserController';
 import authJwt from './middleware/authJwt';
 import ProductController from 'controller/ProductController';
+import CategoryController from 'controller/CategoryController';
 
 const app = fastify();
 
@@ -16,6 +17,7 @@ const port = 3333;
 app.register(authJwt);
 app.register(UserController);
 app.register(ProductController);
+app.register(CategoryController);
 
 
 app.listen({port: port}).then(() => {

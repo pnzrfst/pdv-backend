@@ -3,7 +3,7 @@ import { productService } from "service/Product";
 
 
 export default function ProductController(app: FastifyInstance){
-    app.addHook("onRequest", app.authenticate);
+    // app.addHook("onRequest", app.authenticate);
 
     app.get("/products", async(request, reply) => {
         const params = request.query;
