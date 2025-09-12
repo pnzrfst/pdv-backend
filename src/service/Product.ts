@@ -4,7 +4,7 @@ import { prisma } from "prisma/client";
 class ProductServices {
   public async getAllProducts(): Promise<Products[]> {
     const products: Products[] = await prisma.products.findMany({
-      where: { isActive: true }
+      where: { isActive: true },
     });
 
     return products.map((product) => ({
@@ -146,6 +146,14 @@ class ProductServices {
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
     }));
+  }
+
+
+ public async countProducts(): Promise<number> {
+    const total = await prisma.products.c({
+      where: { isActive: true },
+    });
+    return total;
   }
 }
 

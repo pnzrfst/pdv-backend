@@ -6,14 +6,18 @@ export default function ProductController(app: FastifyInstance){
     // app.addHook("onRequest", app.authenticate);
 
     app.get("/products", async(request, reply) => {
-        const params = request.query;
 
         try {
-            const list = Object.keys(params as object).length > 0
-            ? await productService.getByParams(params)
-            : await productService.getAllProducts();
-         
-            return reply.status(200).send(list);
+           const allProducts = await productService.getAllProducts();
+           const totalProducts = allProducts.reduce((acc, product) => acc + product.quantity, 0);
+           const stockValue = allProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+
+           return reply.status(200).send({
+            totalProducts,
+            stockValue,
+            products: allProducts
+           });
+
         } catch (error) {
             return reply.code(400).send({error: "Não foi possível listar os produtos."});
         }
