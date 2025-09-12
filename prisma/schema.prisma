@@ -47,9 +47,9 @@ model Sales {
   id            String          @id
   date          DateTime        @default(now())
   total         Float
-  paymentMethod PaymentMethod
-  clientId      String
-  client        Clients         @relation(fields: [clientId], references: [id])
+  payment_method PaymentMethod
+  client_id      String
+  client        Clients         @relation(fields: [client_id], references: [id])
   Sale_Products Sale_Products[]
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
