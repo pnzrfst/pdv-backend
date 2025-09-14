@@ -56,14 +56,4 @@ export default function ProductController(app: FastifyInstance){
         }
     })
 
-    // app.get("/products", async(request: FastifyRequest, reply: FastifyReply) =>{
-    //     const params = request.query
-
-    //     try {
-    //         const list = await productService.getByParams(params);
-    //         return reply.status(200).send(list);
-    //     } catch (error: any) {
-    //         return reply.code(400).send({error: "Não foi possível listar os produtos."});
-    //     }
-    // })
 }
