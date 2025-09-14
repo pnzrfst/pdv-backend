@@ -31,6 +31,15 @@ class CategoryService {
         const total = await prisma.category.count();
         return total;
     }
+
+    public async getAllCategories(): Promise<Category[]> {
+        const categories = await prisma.category.findMany({
+            orderBy: {
+                name: "asc"
+            }
+        });
+        return categories;
+    }
 }
 
 export const categoryService = new CategoryService();
