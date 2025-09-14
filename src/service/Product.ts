@@ -24,10 +24,10 @@ class ProductServices {
   public async createProduct({
     name,
     quantity,
+    category_id,
     cost,
     price,
-    description,
-    category_id,
+    description
   }: CreateProductDTO): Promise<void> {
     const category = await prisma.category.findUnique({
       where: { id: category_id },
@@ -41,13 +41,13 @@ class ProductServices {
       id: crypto.randomUUID(),
       name,
       quantity,
+      category_id,
       cost,
       price,
       description: description || "",
-      category_id,
       isActive: true,
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     await prisma.$transaction([prisma.products.create({ data: newProduct })]);
