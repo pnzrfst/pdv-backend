@@ -9,6 +9,7 @@ class SalesService {
             id: sale.id,
             date: sale.date,
             total: sale.total,
+            isFiado: sale.isFiado,
             payment_method: sale.payment_method,
             client_id: sale.client_id,
             createdAt: sale.createdAt,
