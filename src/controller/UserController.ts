@@ -34,5 +34,5 @@ export default function UserController(app: FastifyInstance) {
             return reply.status(400).send({error: error.message});
         }
 
-    })// Controller logic here
+    })
 }
