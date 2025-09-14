@@ -26,7 +26,7 @@ model User {
 
 enum PaymentMethod {
   CARTAO_CREDITO
-  CARTA_DEBITO
+  CARTAO_DEBITO
   DINHEIRO
   FIADO
   PIX
@@ -88,13 +88,14 @@ model Products {
 }
 
 model Sale_Products {
-  id       String   @id
-  sale     Sales    @relation(fields: [saleId], references: [id])
-  product  Products @relation(fields: [productId], references: [id])
-  quantity Int
-
-  saleId    String
-  productId String
+  id         String   @id
+  sale       Sales    @relation(fields: [sale_id], references: [id])
+  product    Products @relation(fields: [product_id], references: [id])
+  quantity   Int
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  sale_id    String
+  product_id String
 
   @@map("sale_products")
 }
