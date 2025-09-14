@@ -1,10 +1,10 @@
 interface CreateProductDTO {
     name: string;
     quantity: number;
+    category_id: string;
     cost: number;
     price: number;
     description?: string;
-    category_id: string;
 }
 
 interface UpdateProductDTO {
