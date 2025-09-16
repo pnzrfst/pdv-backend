@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { productService } from "service/Product";
+import { UpdateProductInput } from "types/Product";
 
 
 export default function ProductController(app: FastifyInstance){
@@ -34,11 +35,12 @@ export default function ProductController(app: FastifyInstance){
         }
     })
 
-    app.patch("/products", async(request: FastifyRequest, reply: FastifyReply) =>{
-        const body = request.body as UpdateProductDTO;
+    app.patch<{Params: {id: string}, Body: Omit<UpdateProductInput, "id">}>("/products/:id", async(request: FastifyRequest, reply: FastifyReply) =>{
+        const {id} = request.params as {id: string}
+        const body = request.body as UpdateProductInput;
 
         try {
-            const product = await productService.updateProduct(body);
+            const product = await productService.updateProduct({id, ...body});
             return reply.status(201).send(product);
         } catch (error : any) {
             return reply.code(400).send({error: error.message});
