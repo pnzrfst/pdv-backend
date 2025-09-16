@@ -1,5 +1,6 @@
 import { Products } from "@prisma/client";
 import { prisma } from "prisma/client";
+import { CreateProductDTO, UpdateProductDTO } from "types/Product";
 
 class ProductServices {
   public async getAllProducts(): Promise<Products[]> {
