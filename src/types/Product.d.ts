@@ -7,10 +7,13 @@ interface CreateProductDTO {
     description?: string;
 }
 
-interface UpdateProductDTO {
+export interface UpdateProductInput {
+  quantity?: number;
+  cost?: number;
+  price?: number;
+  description?: string;
+}
+
+interface UpdateProductDTO extends UpdateProductInput{
     id: string;
-    quantity?: number;
-    cost?: number;
-    price?: number;
-    description?: string;
 }
