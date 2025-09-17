@@ -1,10 +1,18 @@
 interface CreateProductDTO {
-    name: string;
-    quantity: number;
-    category_id: string;
-    cost: number;
-    price: number;
-    description?: string;
+  name: string;
+  quantity: number;
+  category_id: string;
+  cost: number;
+  price: number;
+  description?: string;
+}
+
+interface getProductById {
+  quantity: number;
+  category_id: string;
+  cost: number;
+  price: number;
+  description?: string;
 }
 
 export interface UpdateProductInput {
@@ -14,6 +22,6 @@ export interface UpdateProductInput {
   description?: string;
 }
 
-interface UpdateProductDTO extends UpdateProductInput{
-    id: string;
+interface UpdateProductDTO extends UpdateProductInput {
+  id: string;
 }

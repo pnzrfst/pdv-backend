@@ -22,13 +22,36 @@ class ProductServices {
     }));
   }
 
+  public async getProductById(id: string) {
+    const product = await prisma.products.findUnique({
+      where: { id: id },
+      select: {
+        quantity: true,
+        cost: true,
+        price: true,
+        description: true,
+      },
+    });
+
+    console.log(product);
+
+    if (!product) return null;
+
+    return {
+      quantity: product.quantity,
+      cost: product.cost,
+      price: product.price,
+      description: product.description,
+    };
+  }
+
   public async createProduct({
     name,
     quantity,
     category_id,
     cost,
     price,
-    description
+    description,
   }: CreateProductDTO): Promise<void> {
     const category = await prisma.category.findUnique({
       where: { id: category_id },
@@ -48,7 +71,7 @@ class ProductServices {
       description: description || "",
       isActive: true,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     await prisma.$transaction([prisma.products.create({ data: newProduct })]);
@@ -149,8 +172,7 @@ class ProductServices {
     }));
   }
 
-
- public async countProducts(): Promise<number> {
+  public async countProducts(): Promise<number> {
     const total = await prisma.products.c({
       where: { isActive: true },
     });
