@@ -5,7 +5,9 @@ import { CreateProductDTO, UpdateProductDTO } from "types/Product";
 class ProductServices {
   public async getAllProducts(): Promise<Products[]> {
     const products: Products[] = await prisma.products.findMany({
-      where: { isActive: true },
+      where: { 
+        isActive: true
+      },
     });
 
     return products.map((product) => ({
