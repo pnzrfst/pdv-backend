@@ -1,6 +1,7 @@
 import { Sales } from "@prisma/client";
 import { prisma } from "prisma/client";
-
+import { startOfDay, endOfDay } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 class SalesService {
   public async getAllSales(): Promise<Sales[]> {
     const sales: Sales[] = await prisma.sales.findMany();
@@ -9,7 +10,7 @@ class SalesService {
       id: sale.id,
       date: sale.date,
       total: sale.total,
-      isFiado: sale.isFiado,
+      is_fiado: sale.is_fiado,
       payment_method: sale.payment_method,
       client_id: sale.client_id,
       createdAt: sale.createdAt,
@@ -17,10 +18,33 @@ class SalesService {
     }));
   }
 
+  public async getTodaySales(): Promise<number>{
+
+    const timezone = "America/Sao_Paulo";
+    
+    const now = new Date();
+
+    const start = toZonedTime(startOfDay(now), timezone);
+    const end = toZonedTime(endOfDay(now), timezone);
+
+    const todaySales = await prisma.sales.findMany({
+      where: {
+        createdAt: {
+          gte: start,
+          lt: end,
+        },
+      },
+    })
+
+    const totalEarnedToday = todaySales.reduce((acc, sale) => acc + sale.total, 0);
+    
+    return totalEarnedToday
+  }
+
   public async createSale({
     products,
     client_id,
-    isFiado,
+    is_fiado,
     payment_method,
   }: CreateSaleDTO): Promise<void> {
 
@@ -63,7 +87,7 @@ class SalesService {
       id: crypto.randomUUID(),
       date: new Date(),
       total,
-      isFiado,
+      is_fiado,
       payment_method,
       client_id,
       createdAt: new Date(),
