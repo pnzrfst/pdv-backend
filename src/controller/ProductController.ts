@@ -12,6 +12,7 @@ export default function ProductController(app: FastifyInstance) {
         (acc, product) => acc + product.quantity,
         0
       );
+
       const stockValue = allProducts.reduce(
         (acc, product) => acc + product.price * product.quantity,
         0
@@ -30,10 +31,10 @@ export default function ProductController(app: FastifyInstance) {
   });
 
   app.get("/products/:id", async (request, reply) => {
-    const {id }= request.params as { id: string };
+    const { id } = request.params as { id: string };
     try {
       const product = await productService.getProductById(id);
-      return reply.status(200).send(product)
+      return reply.status(200).send(product);
     } catch (error) {
       return reply
         .code(500)
@@ -83,4 +84,40 @@ export default function ProductController(app: FastifyInstance) {
       }
     }
   );
+
+  app.get("/home-summary", async (request, reply) => {
+    try {
+      const allProducts = await productService.getAllProducts();
+
+      const lowStockProducts = allProducts.filter(
+        (product) => product.quantity <= 20
+      );
+
+      const mapProductWithBiggerStock = [...allProducts].sort(
+        (a, b) => b.quantity - a.quantity 
+      );
+
+      const mapProductWithLowerStock = [...allProducts].sort(
+        (a, b) => a.quantity - b.quantity 
+      );
+
+      const biggerStock = {
+        name: mapProductWithBiggerStock[0].name,
+      };
+
+      const lowerStock = {
+        name: mapProductWithLowerStock[0].name,
+      };
+
+      return reply.status(200).send({
+        lowStockProducts: lowStockProducts.length,
+        biggerStock: biggerStock,
+        lowerStock: lowerStock,
+      });
+    } catch (error) {
+      return reply
+        .code(400)
+        .send({ error: "Não foi possível listar os produtos." });
+    }
+  });
 }
