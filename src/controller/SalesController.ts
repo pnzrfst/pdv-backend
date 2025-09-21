@@ -7,9 +7,11 @@ export default function SalesController(app: FastifyInstance) {
       const sales = await salesService.getAllSales();
       const countSales = sales.length;
       const averageTicket = sales.reduce((acc, sale) => acc + sale.total, 0);
+      const totalEarnedToday = await salesService.getTodaySales();
+
       return reply
         .status(200)
-        .send({ sales, countSales, averageTicket: averageTicket / countSales });
+        .send({ sales, countSales, averageTicket: averageTicket / countSales, totalEarnedToday});
     } catch (error: any) {
       return reply.code(400).send({ error: error.message });
     }
