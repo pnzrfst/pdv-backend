@@ -19,4 +19,16 @@ export default function ClientsController(app: FastifyInstance){
             return reply.status(500).send({ error: "Internal Server Error" });
         }
     })
+
+    app.post("/clients", async(request: FastifyRequest, reply: FastifyReply) => {
+        const newClient = request.body as CreateClienteDTO
+        
+        try {
+            await clientService.createClient(newClient);
+            reply.status(201).send();
+        } catch (error: any) {
+            console.error(error.message);
+            return reply.status(400).send({error: "Mandou errado"})
+        }   
+    })
 }
