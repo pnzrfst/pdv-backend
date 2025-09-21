@@ -1,32 +1,53 @@
 import { prisma } from "prisma/client";
 import { Clients } from "@prisma/client";
 
-class ClientService{
-    public async getAllClients(): Promise<Clients[]>{
-        const clients = await prisma.clients.findMany({
-            orderBy: [
-                { name: 'asc' },
-                { createdAt: 'desc' }
-            ]
-        })
+class ClientService {
+  public async getAllClients(): Promise<Clients[]> {
+    const clients = await prisma.clients.findMany({
+      orderBy: [{ name: "asc" }, { createdAt: "desc" }],
+    });
 
-        return clients;
-    }
+    return clients;
+  }
 
-    public async countClients(): Promise<number> {
-        const total = await prisma.clients.count();
-        return total;
-    }
+  public async countClients(): Promise<number> {
+    const total = await prisma.clients.count();
+    return total;
+  }
 
-    public async getByFiado(isFiado: boolean): Promise<any> {
-        const filteredByFiado = await prisma.sales.findMany({
-            where: { isFiado },
-            orderBy: { createdAt: 'desc' },
-            include: { client: true },
-        });
+  public async createClient({
+    name,
+    phone,
+    address,
+  }: CreateClienteDTO): Promise<void> {
+    const clientAlreadyExist = await prisma.clients.findUnique({
+      where: { phone },
+    });
 
-        return filteredByFiado;
-    }
+    if (clientAlreadyExist) throw new Error("ERRO: Cliente já existe");
+
+    const newClient = {
+      id: crypto.randomUUID(),
+      name,
+      address,
+      phone,
+      sales: undefined,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    await prisma.clients.create({
+      data: newClient,
+    });
+  }
+
+  public async getByFiado(is_fiado: boolean): Promise<any> {
+    const count = await prisma.sales.count({
+      where: { is_fiado },
+    });
+
+    return count
+  }
 }
 
 export const clientService = new ClientService();
