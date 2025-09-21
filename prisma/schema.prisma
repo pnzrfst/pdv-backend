@@ -35,9 +35,8 @@ enum PaymentMethod {
 model Clients {
   id        String   @id
   name      String
-  email     String   @unique
   address   String
-  phone     String
+  phone     String   @unique
   sales     Sales[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -49,7 +48,7 @@ model Sales {
   id             String          @id
   date           DateTime        @default(now())
   total          Float
-  isFiado        Boolean         @default(false)
+  is_fiado        Boolean         @default(false)
   payment_method PaymentMethod
   client_id      String
   client         Clients         @relation(fields: [client_id], references: [id])
