@@ -6,7 +6,7 @@ import ProductController from 'controller/ProductController';
 import CategoryController from 'controller/CategoryController';
 import SalesController from 'controller/SalesController';
 import ClientsController from 'controller/ClientsController';
-import SummaryController from 'controller/SumaryController';
+import SummaryController from 'controller/SummaryController';
 
 const app = fastify();
 
