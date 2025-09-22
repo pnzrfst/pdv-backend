@@ -6,6 +6,7 @@ import ProductController from 'controller/ProductController';
 import CategoryController from 'controller/CategoryController';
 import SalesController from 'controller/SalesController';
 import ClientsController from 'controller/ClientsController';
+import SummaryController from 'controller/SumaryController';
 
 const app = fastify();
 
@@ -22,6 +23,7 @@ app.register(ProductController);
 app.register(CategoryController);
 app.register(SalesController);
 app.register(ClientsController);
+app.register(SummaryController);
 
 app.listen({port: port}).then(() => {
     console.log(`Servidor rodando na porta ${port}`)
