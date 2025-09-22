@@ -85,39 +85,5 @@ export default function ProductController(app: FastifyInstance) {
     }
   );
 
-  app.get("/home-summary", async (request, reply) => {
-    try {
-      const allProducts = await productService.getAllProducts();
-
-      const lowStockProducts = allProducts.filter(
-        (product) => product.quantity <= 20
-      );
-
-      const mapProductWithBiggerStock = [...allProducts].sort(
-        (a, b) => b.quantity - a.quantity 
-      );
-
-      const mapProductWithLowerStock = [...allProducts].sort(
-        (a, b) => a.quantity - b.quantity 
-      );
-
-      const biggerStock = {
-        name: mapProductWithBiggerStock[0].name,
-      };
-
-      const lowerStock = {
-        name: mapProductWithLowerStock[0].name,
-      };
-
-      return reply.status(200).send({
-        lowStockProducts: lowStockProducts.length,
-        biggerStock: biggerStock,
-        lowerStock: lowerStock,
-      });
-    } catch (error) {
-      return reply
-        .code(400)
-        .send({ error: "Não foi possível listar os produtos." });
-    }
-  });
+  
 }
