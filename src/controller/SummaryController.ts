@@ -1,3 +1,4 @@
+import { PaymentMethod } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import { productService } from "service/Product";
 import { salesService } from "service/Sales";
@@ -47,6 +48,17 @@ export default function SummaryController(app: FastifyInstance) {
         (acc, sale) => (sale.is_fiado ? acc + 1 : acc),
         0
       );
+
+      const mostUsedPaymentMethod = allSales.reduce((acc, paymentMethod) => {
+        acc[paymentMethod.payment_method] =
+          (acc[paymentMethod.payment_method] || 0) + 1;
+        return acc;
+      }, {} as Record<PaymentMethod, number>);
+
+      return reply.status(200).send({
+        fiadoSales,
+        mostUsedPaymentMethod
+      });
     } catch (error) {
       return reply
         .code(400)
