@@ -42,7 +42,7 @@ export default function SummaryController(app: FastifyInstance) {
 
   app.get("/sales-summary", async (request, reply) => {
     try {
-      const allSales = await salesService.getAllSales();
+      const allSales = await salesService.getAllSales({page: 1, pageSize: 10});
 
       const fiadoSales = allSales.reduce(
         (acc, sale) => (sale.is_fiado ? acc + 1 : acc),
@@ -75,7 +75,7 @@ export default function SummaryController(app: FastifyInstance) {
     } catch (error) {
       return reply
         .code(400)
-        .send({ error: "Não foi possível listar os produtos." });
+        .send({ error: "Não foi possível listar as vendas." });
     }
   });
 }
