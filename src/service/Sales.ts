@@ -35,10 +35,11 @@ class SalesService {
     }));
   }
  
+  
   public async countTotalSales() : Promise<number>{
     return await prisma.sales.count();
   }
-  
+
   public async getTodaySales(): Promise<number>{
 
     const timezone = "America/Sao_Paulo";
