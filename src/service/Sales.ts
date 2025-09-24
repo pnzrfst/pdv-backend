@@ -2,10 +2,27 @@ import { Sales } from "@prisma/client";
 import { prisma } from "prisma/client";
 import { startOfDay, endOfDay } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-class SalesService {
-  public async getAllSales(): Promise<Sales[]> {
-    const sales: Sales[] = await prisma.sales.findMany();
 
+interface PaginationParams {
+  page: number,
+  pageSize: number
+}
+
+
+class SalesService {
+  public async getAllSales(params: PaginationParams): Promise<Sales[]> {
+    const {page, pageSize} = params;
+
+    const skipPage = (page - 1) * pageSize;
+
+    const sales: Sales[] = await prisma.sales.findMany({
+      skip: skipPage,
+      take: pageSize,
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    
     return sales.map((sale) => ({
       id: sale.id,
       date: sale.date,
@@ -17,7 +34,11 @@ class SalesService {
       updatedAt: sale.updatedAt,
     }));
   }
-
+ 
+  public async countTotalSales() : Promise<number>{
+    return await prisma.sales.count();
+  }
+  
   public async getTodaySales(): Promise<number>{
 
     const timezone = "America/Sao_Paulo";
