@@ -4,3 +4,8 @@ interface CreateSaleDTO{
     is_fiado: boolean;
     payment_method: 'CARTAO_CREDITO' | 'CARTAO_DEBITO' | 'DINHEIRO' | 'FIADO' | 'PIX';
 }
+
+interface SalesQuery {
+  page?: string;
+  pageSize?: string;
+}
