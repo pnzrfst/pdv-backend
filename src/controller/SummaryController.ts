@@ -49,15 +49,28 @@ export default function SummaryController(app: FastifyInstance) {
         0
       );
 
-      const mostUsedPaymentMethod = allSales.reduce((acc, paymentMethod) => {
+      // pega o array de vendas, dá um reduce nele > cria um payment-method para cada vez q o acumulador for chamado, se ele 
+      // já existe, acrescenta 1 e retorna isso num tipo genérico.
+      const mapMostUsedPaymentMethod = allSales.reduce((acc, paymentMethod) => {
         acc[paymentMethod.payment_method] =
           (acc[paymentMethod.payment_method] || 0) + 1;
         return acc;
       }, {} as Record<PaymentMethod, number>);
 
+      // pega o obj gerado antes, transforma num array baseado em name, count
+      const paymentMethodsArray = Object.entries(mapMostUsedPaymentMethod).map(
+        ([name, acc]) => ({
+          name,
+          acc,
+        })
+      );
+
+      //sort no array gerado antes, ordenando de forma decrescente. 
+      const sortedPaymentMethodsArray = paymentMethodsArray.sort((a,b) => b.acc - a.acc);
+
       return reply.status(200).send({
         fiadoSales,
-        mostUsedPaymentMethod
+        mostUsedMethod: sortedPaymentMethodsArray[0],
       });
     } catch (error) {
       return reply
