@@ -2,25 +2,37 @@ import { Products } from "@prisma/client";
 import { prisma } from "prisma/client";
 import { CreateProductDTO, UpdateProductDTO } from "types/Product";
 
+interface PaginationParams {
+  page: number;
+  pageSize: number;
+}
+
 class ProductServices {
-  public async getAllProducts(): Promise<Products[]> {
+  public async getAllProducts(params: PaginationParams): Promise<Products[]> {
+    const { page, pageSize } = params;
+
+    const skipPage = (page - 1) * pageSize;
+
     const products: Products[] = await prisma.products.findMany({
-      where: { 
-        isActive: true
+      skip: skipPage,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
     return products.map((product) => ({
       id: product.id,
       name: product.name,
+      category: product.category_id,
       quantity: product.quantity,
       cost: product.cost,
       price: product.price,
       description: product.description,
-      isActive: product.isActive,
       category_id: product.category_id,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
+      isActive: product.isActive,
     }));
   }
 
@@ -175,10 +187,79 @@ class ProductServices {
   }
 
   public async countProducts(): Promise<number> {
-    const total = await prisma.products.c({
+    const total = await prisma.products.count({
       where: { isActive: true },
     });
     return total;
+  }
+
+  public async getPageSummary({
+    page,
+    pageSize,
+  }: {
+    page: number;
+    pageSize: number;
+  }) {
+    const countProducts = await this.countProducts();
+
+    const totalPages = Math.ceil(countProducts / pageSize);
+
+    const allProducts = await this.getAllProducts({
+      page,
+      pageSize,
+    });
+
+    const totalProducts = allProducts.reduce(
+      (acc, product) => acc + product.quantity,
+      0
+    );
+
+    const stockValue = allProducts.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0 
+    );
+
+    return {
+      countProducts,
+      totalPages,
+      totalProducts,
+      stockValue,
+      products: allProducts,
+    };
+  }
+
+  public async getHomeSummary() {
+    const allProducts = await prisma.products.findMany({
+      where: {
+        isActive: true
+      }
+    });
+
+    const lowStockProducts = allProducts.filter(
+      (product) => product.quantity <= 20
+    );
+
+    const mapProductWithBiggerStock = [...allProducts].sort(
+      (a, b) => b.quantity - a.quantity
+    );
+
+    const mapProductWithLowerStock = [...allProducts].sort(
+      (a, b) => a.quantity - b.quantity
+    );
+
+    const biggerStock = {
+      name: mapProductWithBiggerStock[0].name,
+    };
+
+    const lowerStock = {
+      name: mapProductWithLowerStock[0].name,
+    };
+
+    return {
+      lowStockProducts,
+      biggerStock,
+      lowerStock
+    }
   }
 }
 
