@@ -1,28 +1,23 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { productService } from "service/Product";
-import { CreateProductDTO, UpdateProductInput } from "types/Product";
+import { CreateProductDTO, ProductQuery, UpdateProductInput } from "types/Product";
 
 export default function ProductController(app: FastifyInstance) {
   // app.addHook("onRequest", app.authenticate);
 
   app.get("/products", async (request, reply) => {
     try {
-      const allProducts = await productService.getAllProducts();
-      const totalProducts = allProducts.reduce(
-        (acc, product) => acc + product.quantity,
-        0
-      );
+      const {page = 1, pageSize = 10} = request.query as ProductQuery;
 
-      const stockValue = allProducts.reduce(
-        (acc, product) => acc + product.price * product.quantity,
-        0
-      );
+      const pageNumber = parseInt(page as string, 10);
+      const pageSizeNumber = parseInt(pageSize as string, 10);
 
-      return reply.status(200).send({
-        totalProducts,
-        stockValue,
-        products: allProducts,
+      const data = await productService.getPageSummary({
+        page: pageNumber,
+        pageSize: pageSizeNumber
       });
+      
+      return reply.status(200).send(data);
     } catch (error) {
       return reply
         .code(400)
