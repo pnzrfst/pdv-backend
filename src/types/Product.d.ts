@@ -25,3 +25,8 @@ export interface UpdateProductInput {
 interface UpdateProductDTO extends UpdateProductInput {
   id: string;
 }
+
+interface ProductQuery {
+  page? : string;
+  pageSize? : string
+}
