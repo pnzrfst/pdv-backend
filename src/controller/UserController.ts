@@ -19,7 +19,7 @@ export default function UserController(app: FastifyInstance) {
 
         try {
             const token = await userService.login(body, app);
-            return reply.status(201).send({accesToken: token});
+            return reply.status(201).send({accessToken: token});
         } catch (error: any) {
             return reply.status(400).send({error: error.message});
         }

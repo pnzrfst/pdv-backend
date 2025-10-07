@@ -2,8 +2,10 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { categoryService } from "service/Category";
 
 export default function CategoryController(app: FastifyInstance) {
+  app.addHook("onRequest", app.authenticate);
   app.get(
     "/categories",
+    {preHandler: [app.authenticate]},
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const list = await categoryService.countCategories();
@@ -16,6 +18,7 @@ export default function CategoryController(app: FastifyInstance) {
 
   app.get(
     "/categories/all",
+    {preHandler: [app.authenticate]},
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const categories = await categoryService.getAllCategories();
@@ -28,6 +31,7 @@ export default function CategoryController(app: FastifyInstance) {
 
   app.post(
     "/categories",
+    {preHandler: [app.authenticate]},
     async (request: FastifyRequest, reply: FastifyReply) => {
       const { name } = request.body as { name: string };
 
