@@ -13,12 +13,15 @@ class ProductServices {
 
     const skipPage = (page - 1) * pageSize;
 
-    const products: Products[] = await prisma.products.findMany({
+    const products = await prisma.products.findMany({
       skip: skipPage,
       take: pageSize,
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        category: {select: {name: true}}
+      }
     });
 
     return products.map((product) => ({
@@ -30,6 +33,7 @@ class ProductServices {
       price: product.price,
       description: product.description,
       category_id: product.category_id,
+      category_name: product.category?.name,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
       isActive: product.isActive,
@@ -164,12 +168,15 @@ class ProductServices {
       whereClause.cost = Number(params.cost);
     }
 
-    const products: Products[] = await prisma.products.findMany({
+    const products : Products[] = await prisma.products.findMany({
       where: whereClause,
       orderBy:
         params.by && params.order
           ? { [params.by]: params.order }
           : { createdAt: "desc" },
+      include: {
+        category: { select: {name: true}}
+      }
     });
 
     return products.map((product) => ({
@@ -216,7 +223,7 @@ class ProductServices {
 
     const stockValue = allProducts.reduce(
       (acc, product) => acc + product.price * product.quantity,
-      0 
+      0
     );
 
     return {
@@ -231,8 +238,8 @@ class ProductServices {
   public async getHomeSummary() {
     const allProducts = await prisma.products.findMany({
       where: {
-        isActive: true
-      }
+        isActive: true,
+      },
     });
 
     const lowStockProducts = allProducts.filter(
@@ -258,8 +265,8 @@ class ProductServices {
     return {
       lowStockProducts,
       biggerStock,
-      lowerStock
-    }
+      lowerStock,
+    };
   }
 }
 

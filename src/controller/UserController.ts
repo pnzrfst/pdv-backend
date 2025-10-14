@@ -18,8 +18,8 @@ export default function UserController(app: FastifyInstance) {
         const body = request.body as LoginUserDTO
 
         try {
-            const token = await userService.login(body, app);
-            return reply.status(201).send({accessToken: token});
+            const userInfos = await userService.login(body, app);
+            return reply.status(201).send(userInfos);
         } catch (error: any) {
             return reply.status(400).send({error: error.message});
         }

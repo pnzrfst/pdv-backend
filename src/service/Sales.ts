@@ -22,12 +22,17 @@ class SalesService {
 
     const skipPage = (page - 1) * pageSize;
 
-    const sales: Sales[] = await prisma.sales.findMany({
+    const sales = await prisma.sales.findMany({
       skip: skipPage,
       take: pageSize,
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        client: {
+          select: {name: true},
+        }
+      }
     });
 
     return sales.map((sale) => ({
@@ -39,6 +44,7 @@ class SalesService {
       client_id: sale.client_id,
       createdAt: sale.createdAt,
       updatedAt: sale.updatedAt,
+      client_name: sale.client?.name
     }));
   }
 

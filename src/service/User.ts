@@ -30,7 +30,7 @@ class UserService {
         });
    }
 
-    public async login({email, password} : LoginUserDTO, app: FastifyInstance): Promise<string | null> {
+    public async login({email, password} : LoginUserDTO, app: FastifyInstance): Promise<any> {
         const user = await prisma.user.findUnique({
             where: { email: email }
         });
@@ -45,13 +45,18 @@ class UserService {
             throw new Error("Senha inválida.");
         }
 
-        return app.jwt.sign({
+        const token =  app.jwt.sign({
             id: user.id,
             name: user.name,
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         });
+
+        return {
+            accessToken : token,
+            user: user.name
+        }
     }
 
     public async resetPassword(email: string, password: string): Promise<void> {
