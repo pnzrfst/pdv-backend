@@ -7,13 +7,15 @@ import CategoryController from 'controller/CategoryController';
 import SalesController from 'controller/SalesController';
 import ClientsController from 'controller/ClientsController';
 import SummaryController from 'controller/SummaryController';
-import IncomeController from 'controller/IncomeControllet';
+import IncomeController from 'controller/IncomeController';
 
 const app = fastify();
 
 app.register(cors, {
-    origin: true,
-    methods: ["GET", "POST", "PATCH", "DELETE"]
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
 }); 
 
 const port = 3333;

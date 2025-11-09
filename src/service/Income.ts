@@ -31,7 +31,7 @@ class IncomeService {
             where: {
                 createdAt: {
                     gte: start,
-                    lte: end
+                    lt: end
                 }
             }
         })

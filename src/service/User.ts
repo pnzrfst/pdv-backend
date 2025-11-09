@@ -2,7 +2,7 @@ import { CreateUserDTO, LoginUserDTO } from "../types/User";
 import { prisma } from "../prisma/client";
 import { User } from "@prisma/client";
 import { hash, compare } from "bcryptjs";
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyReply } from "fastify";
 
 class UserService {
     public async createUser({name, email, password} : CreateUserDTO): Promise<void> {
@@ -30,7 +30,7 @@ class UserService {
         });
    }
 
-    public async login({email, password} : LoginUserDTO, app: FastifyInstance): Promise<any> {
+    public async login({email, password} : LoginUserDTO, app: FastifyInstance, reply: FastifyReply): Promise<any> {
         const user = await prisma.user.findUnique({
             where: { email: email }
         });
@@ -45,12 +45,19 @@ class UserService {
             throw new Error("Senha inválida.");
         }
 
-        const token =  app.jwt.sign({
+        const token = app.jwt.sign({
             id: user.id,
             name: user.name,
-            email: user.email,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+            email: user.email
+        })
+
+        reply.setCookie("token", token, {
+            domain: "localhost",
+            path: "/",
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax", 
+            expires: new Date(Date.now() + 3600000) // 1 hora
         });
 
         return {
