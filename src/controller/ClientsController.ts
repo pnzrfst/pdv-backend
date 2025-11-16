@@ -11,7 +11,6 @@ export default function ClientsController(app: FastifyInstance) {
         const clients = await clientService.getAllClients();
         const countClients = await clientService.countClients();
         const filteredByFiado = await clientService.getByFiado(true);
-
         return reply.status(200).send({
           clients,
           countClients,

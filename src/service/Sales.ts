@@ -201,7 +201,7 @@ class SalesService {
       })
     );
 
-    //sort no array gerado antes, ordenando de forma decrescente.
+    //sort no array gerado antes, ordenando de forma decrescente
     const sortedPaymentMethodsArray = paymentMethodsArray.sort(
       (a, b) => b.acc - a.acc
     );
