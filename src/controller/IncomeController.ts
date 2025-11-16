@@ -29,10 +29,12 @@ export default function IncomeController(app: FastifyInstance){
         try {
             const currentTotal = await incomeServices.getMonthlyIndicator(currentYear, currentMonth);
             const previousTotal = await incomeServices.getMonthlyIndicator(previousYear, previousMonth);
+            const bestDay = await incomeServices.getBestDayInMonth(currentYear, currentMonth);
 
             return reply.status(200).send({
                 currentMonthTotal: currentTotal,
-                previousMonthTotal: previousTotal
+                previousMonthTotal: previousTotal,
+                bestDayInCurrentMonth: bestDay
             });
         } catch (error) {
             return reply.status(404).send(error);
