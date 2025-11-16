@@ -3,12 +3,20 @@ import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "fastify-jwt";
 
 export default fastifyPlugin(async (fastify) => {
+  const jwtSecret = process.env.JWT_SECRET;
+  const cookieSecret = process.env.COOKIE_SECRET;
+
+   if(!jwtSecret) throw new Error("JWT_SECRET is not defined");
+  if(!cookieSecret) throw new Error("COOKIE_SECRET is not defined");
+
   fastify.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET,
+    expires: 3600,
   });
 
+ 
   fastify.register(fastifyJwt, {
-    secret: process.env.JWT_SECRET,
+    secret: jwtSecret,
     cookie: {
       cookieName: "token",
       signed: false,
